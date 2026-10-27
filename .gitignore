@@ -1,0 +1,26 @@
+# Environnement virtuel Python
+.venv/
+venv/
+env/
+
+# Fichiers Python compilés
+__pycache__/
+*.pyc
+
+# Base de données locale et fichiers générés
+db.sqlite3
+staticfiles/
+*.pdf
+
+# Variables d'environnement (secrets)
+.env
+.env.*
+
+# Logs
+*.log
+
+# Éditeurs et système
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
