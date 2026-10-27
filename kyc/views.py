@@ -9,7 +9,7 @@ from .services import effectuer_controle
 
 
 def nouveau_controle(request):
-    """Formulaire de saisie d'un nouveau client (personne physique)."""
+    #Formulaire de saisie d'un nouveau client (personne physique).
     if request.method == "POST":
         form = ControleForm(request.POST)
         if form.is_valid():
@@ -25,11 +25,11 @@ def nouveau_controle(request):
         faible=Count("id", filter=Q(niveau_risque=Controle.Niveau.FAIBLE)),
         fiches=Count("id", filter=Q(est_fiche=True)),
     )
-    return render(request, "kyc/nouveau.html", {
+    return render(request, "kyc/new.html", {
         "form": form,
         "stats": stats,
         "recents": Controle.objects.all()[:5],
-        "nav": "nouveau",
+        "nav": "new",
     })
 
 

@@ -1,0 +1,72 @@
+{% extends "kyc/base.html" %}
+{% block title %}Fiche {{ c.reference }}{% endblock %}
+{% block content %}
+<div class="page-head no-print">
+  <div>
+    <a href="{% url 'kyc:historique' %}">← Historique</a>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <a class="btn btn-ghost" href="{% url 'kyc:new' %}">Nouveau contrôle</a>
+    <a class="btn btn-primary" href="{% url 'kyc:fiche_pdf' c.pk %}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14"/></svg>
+      Générer le rapport PDF
+    </a>
+  </div>
+</div>
+
+<article class="card">
+  <header class="fiche-head">
+    <div>
+      <div class="brand">Check One, Fiche de Conformité KYC</div>
+      <h1>{{ c.nom_complet }}</h1>
+      <div class="meta">
+        <span>Réf. {{ c.reference }}</span>
+        <span>Contrôle du {{ c.date_controle|date:"d/m/Y" }} à {{ c.date_controle|date:"H:i" }}</span>
+      </div>
+    </div>
+    <span class="badge badge-{{ c.couleur_risque }}" style="font-size:14px;padding:6px 14px">{{ c.libelle_risque }}</span>
+  </header>
+
+  <section class="verdicts">
+    <div class="verdict verdict-{{ c.couleur_risque }}">
+      <div class="k">Niveau de risque</div>
+      <div class="v"><span class="dot"></span>{{ c.libelle_risque }}</div>
+      <p>{{ c.motifs_risque|length }} motif{{ c.motifs_risque|length|pluralize }} identifié{{ c.motifs_risque|length|pluralize }}, détail ci dessous.</p>
+    </div>
+    <div class="verdict verdict-{% if c.est_fiche %}rouge{% else %}vert{% endif %}">
+      <div class="k">Screening sanctions</div>
+      <div class="v"><span class="dot"></span>{{ c.resultat_screening }}</div>
+      {% if c.est_fiche %}
+        <p><strong>{{ c.correspondance.prenoms }} {{ c.correspondance.nom }}</strong> · {{ c.correspondance.motif }} · Source {{ c.correspondance.source }} (réf. {{ c.correspondance.id }})</p>
+      {% else %}
+        <p>Le nom ne figure pas dans la base de sanctions consultée.</p>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="fiche-body">
+    <div>
+      <h3>Pourquoi ce niveau de risque ?</h3>
+      <ul>{% for m in c.motifs_risque %}<li>{{ m }}</li>{% endfor %}</ul>
+      <h3 style="margin-top:22px">Conduite à tenir suggérée</h3>
+      <div class="reco">{{ c.recommandation }}</div>
+    </div>
+    <div>
+      <h3>Données saisies</h3>
+      <dl class="recap">
+        <dt>Nom et prénom(s)</dt><dd>{{ c.nom_complet }}</dd>
+        <dt>Date de naissance</dt><dd>{{ c.date_naissance|date:"d/m/Y" }}</dd>
+        <dt>Nationalité</dt><dd>{{ c.nationalite_libelle }}{% if c.nationalite_sanctionnee %}<span class="flag">Pays sous sanctions</span>{% endif %}</dd>
+        <dt>Pièce d'identité</dt><dd>{{ c.get_type_piece_display }} n° {{ c.numero_piece }}</dd>
+        <dt>Profession / secteur</dt><dd>{{ c.profession }}</dd>
+        <dt>Statut PPE</dt><dd>{% if c.est_ppe %}Oui<span class="flag">PPE</span>{% else %}Non{% endif %}</dd>
+        <dt>Volume mensuel</dt><dd>{{ c.get_volume_mensuel_display }}</dd>
+      </dl>
+    </div>
+  </section>
+
+  <footer class="fiche-foot">
+    Screening effectué sur une base de sanctions simulée (test technique). Cette fiche est une aide à la décision et ne remplace pas l'appréciation du responsable conformité.
+  </footer>
+</article>
+{% endblock %}

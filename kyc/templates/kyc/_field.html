@@ -1,0 +1,6 @@
+<div class="field{% if full %} full{% endif %}{% if f.errors %} has-error{% endif %}">
+  <label class="lbl" for="{{ f.id_for_label }}">{{ f.label }} <span class="req">*</span></label>
+  {% if choices %}<div class="choices">{{ f }}</div>{% else %}{{ f }}{% endif %}
+  {% if f.help_text %}<div class="help">{{ f.help_text }}</div>{% endif %}
+  {% for e in f.errors %}<div class="err">{{ e }}</div>{% endfor %}
+</div>

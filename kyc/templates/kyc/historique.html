@@ -1,0 +1,49 @@
+{% extends "kyc/base.html" %}
+{% block title %}Historique{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Historique des contrôles</h1>
+    <p>Tous les contrôles KYC effectués, du plus récent au plus ancien.</p>
+  </div>
+  <a class="btn btn-primary" href="{% url 'kyc:new' %}">Nouveau contrôle</a>
+</div>
+
+<div class="card">
+  <form class="filters" method="get">
+    <input type="search" name="q" value="{{ q }}" placeholder="Rechercher un nom ou un numéro de pièce">
+    <select name="niveau" onchange="this.form.submit()">
+      <option value="">Tous les niveaux</option>
+      {% for val, lib in niveaux %}<option value="{{ val }}" {% if val == niveau %}selected{% endif %}>Risque {{ lib|lower }}</option>{% endfor %}
+    </select>
+    <button class="btn btn-ghost" type="submit">Filtrer</button>
+  </form>
+  <table class="list">
+    <thead><tr>
+      <th>Client</th><th class="hide-sm">Nationalité</th><th class="hide-sm">Date</th><th>Risque</th><th>Screening</th>
+    </tr></thead>
+    <tbody>
+    {% for c in controles %}
+      <tr class="row-link" data-href="{% url 'kyc:fiche' c.pk %}">
+        <td><a href="{% url 'kyc:fiche' c.pk %}">{{ c.nom_complet }}</a><br><small style="color:var(--muted)">{{ c.reference }}</small></td>
+        <td class="hide-sm">{{ c.nationalite_libelle }}</td>
+        <td class="hide-sm">{{ c.date_controle|date:"d/m/Y H:i" }}</td>
+        <td><span class="badge badge-{{ c.couleur_risque }}">{{ c.get_niveau_risque_display }}</span></td>
+        <td>{% if c.est_fiche %}<span class="alert-pill">Individu fiché</span>{% else %}<span class="ok-pill">Aucun fichage</span>{% endif %}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="5" class="empty" style="padding:24px 14px">Aucun contrôle ne correspond.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+  document.querySelectorAll("tr[data-href]").forEach(function (tr) {
+    tr.addEventListener("click", function () {
+      window.location = tr.dataset.href;
+    });
+  });
+</script>
+{% endblock %}

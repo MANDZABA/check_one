@@ -1,0 +1,85 @@
+{% extends "kyc/base.html" %}
+{% block title %}Nouveau contrôle{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Nouveau contrôle KYC</h1>
+    <p>Saisissez les informations du client. Le niveau de risque et le screening sont calculés à la validation.</p>
+  </div>
+</div>
+
+<div class="grid-2">
+  <form method="post" class="card" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="form-section err">{{ form.non_field_errors }}</div>{% endif %}
+
+    <div class="form-section">
+      <div class="form-section-title"><span class="step">1</span> Identité du client</div>
+      <div class="fields">
+        {% include "kyc/_field.html" with f=form.nom %}
+        {% include "kyc/_field.html" with f=form.prenoms %}
+        {% include "kyc/_field.html" with f=form.date_naissance %}
+        {% include "kyc/_field.html" with f=form.nationalite %}
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title"><span class="step">2</span> Pièce d'identité et activité</div>
+      <div class="fields">
+        {% include "kyc/_field.html" with f=form.type_piece choices=True %}
+        {% include "kyc/_field.html" with f=form.numero_piece %}
+        {% include "kyc/_field.html" with f=form.profession full=True %}
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title"><span class="step">3</span> Profil de risque</div>
+      <div class="fields">
+        {% include "kyc/_field.html" with f=form.est_ppe choices=True full=True %}
+        {% include "kyc/_field.html" with f=form.volume_mensuel choices=True full=True %}
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <p><span class="req">*</span> Tous les champs sont obligatoires.</p>
+      <button type="submit" class="btn btn-primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
+        Lancer le contrôle
+      </button>
+    </div>
+  </form>
+
+  <div class="stack">
+    <div class="card card-pad">
+      <h3>Activité</h3>
+      <div class="kpis">
+        <div class="kpi"><b>{{ stats.total }}</b><span>Contrôles</span></div>
+        <div class="kpi"><b style="color:var(--rouge-fg)">{{ stats.fiches }}</b><span>Individus fichés</span></div>
+        <div class="kpi"><b style="color:var(--rouge-fg)">{{ stats.eleve }}</b><span>Risque élevé</span></div>
+        <div class="kpi"><b style="color:var(--jaune-fg)">{{ stats.moyen }}</b><span>Risque moyen</span></div>
+      </div>
+    </div>
+
+    <div class="card card-pad">
+      <h3>Règles de scoring</h3>
+      <div class="legend">
+        <div><span class="badge badge-rouge">Élevé</span><span>Client PPE, ou nationalité sous sanctions (Corée du Nord, Iran, Syrie, Russie), ou plus de 10M FCFA par mois.</span></div>
+        <div><span class="badge badge-jaune">Moyen</span><span>Entre 1M et 10M FCFA par mois, client non PPE.</span></div>
+        <div><span class="badge badge-vert">Faible</span><span>Moins de 1M FCFA par mois, client non PPE.</span></div>
+      </div>
+    </div>
+
+    <div class="card card-pad recents">
+      <h3>Derniers contrôles</h3>
+      {% for c in recents %}
+        <a href="{% url 'kyc:fiche' c.pk %}">
+          <span>{{ c.nom_complet }}<small>{{ c.date_controle|date:"d/m/Y H:i" }}{% if c.est_fiche %} · <span class="alert-pill">Fiché</span>{% endif %}</small></span>
+          <span class="badge badge-{{ c.couleur_risque }}">{{ c.get_niveau_risque_display }}</span>
+        </a>
+      {% empty %}
+        <div class="empty">Aucun contrôle pour le moment.</div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
