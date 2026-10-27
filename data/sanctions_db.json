@@ -1,0 +1,48 @@
+{"_meta": {
+    "description": "Base de sanctions SIMULÉE pour le test technique Check One. Tous les noms sont fictifs.",
+    "source": "Liste fictive (simulation CENTIF / BCEAO / sanctions internationales)",
+    "version": "2026-10-25"
+  },
+    "entries": [ 
+  {
+    "id": "SAN-001",
+    "nom": "Dubois",
+    "prenoms": "Marie",
+    "pays": "France",
+    "motif": "Sanctions économiques internationales",
+    "source": "Conseil de sécurité des Nations Unies"
+  },
+  {
+    "id": "SAN-002",
+    "nom": "Haddad",
+    "prenoms": "Omar",
+    "pays": "Liban",
+    "motif": "Corruption et blanchiment d'argent",
+    "source": "Office of Foreign Assets Control (OFAC)"
+  },
+  {
+    "id": "SAN-003",
+    "nom": "Petrov",
+    "prenoms": "Anatoly",
+    "pays": "Russie",
+    "motif": "Infractions liées à la sécurité nationale",
+    "source": "Union européenne - liste de sanctions"
+  },
+  {
+    "id": "SAN-004",
+    "nom": "Alvarez",
+    "prenoms": "Sofia",
+    "pays": "Espagne",
+    "motif": "Fraude fiscale et financement illicite",
+    "source": "Autorités financières européennes"
+  },
+  {
+    "id": "SAN-005",
+    "nom": "Benali",
+    "prenoms": "Khaled",
+    "pays": "Maroc",
+    "motif": "Violation des réglementations financières",
+    "source": "Banque centrale et organismes de surveillance"
+  }
+]
+}
